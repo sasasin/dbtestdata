@@ -151,7 +151,7 @@
       STDOUT->print("\r$bar $primaryKeysCount[0] records will update.");
 
       my $sql = sprintf("SELECT %s FROM %s", $conf->{'primary'}, $table);
-      my $sth = $db->prepare($sql) || die $DBI::error;
+      $sth = $db->prepare($sql) || die $DBI::error;
       $sth->execute() || die $DBI::error;
       
       my @primaryKeys;
