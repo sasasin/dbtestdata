@@ -162,7 +162,6 @@
           push(@primaryKeys, $row->[0]);
         }
         
-        $count = 0;
         foreach my $pk (@primaryKeys) {
           $count++;
           
