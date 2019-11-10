@@ -154,7 +154,6 @@
       my $count = 0;
       while ($cursor <= $primaryKeysCount[0]) {
         my $sql = sprintf("SELECT %s FROM %s LIMIT %s OFFSET %s", $conf->{'primary'}, $table, $PULSE_COMMIT, $cursor);
-        STDOUT->print("\r$sql");
         $sth = $db->prepare($sql) || die $DBI::error;
         $sth->execute() || die $DBI::error;
         
