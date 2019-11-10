@@ -151,6 +151,7 @@
       STDOUT->print("\r$primaryKeysCount[0] records will update.");
 
       my $cursor = 0;
+      my $count = 0;
       while ($cursor <= $primaryKeysCount[0]) {
         my $sql = sprintf("SELECT %s FROM %s LIMIT %s OFFSET %s", $conf->{'primary'}, $table, $PULSE_COMMIT, $cursor);
         STDOUT->print("\r$sql");
@@ -162,7 +163,7 @@
           push(@primaryKeys, $row->[0]);
         }
         
-        my $count = 0;
+        $count = 0;
         foreach my $pk (@primaryKeys) {
           $count++;
           
