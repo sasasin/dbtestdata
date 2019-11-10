@@ -148,7 +148,7 @@
       while (my $row = $sth->fetchrow_arrayref()) {
         push(@primaryKeysCount, $row->[0]);
       }
-      STDOUT->print("\r$bar $primaryKeysCount[0] records will update.");
+      STDOUT->print("\r$primaryKeysCount[0] records will update.");
 
       my $sql = sprintf("SELECT %s FROM %s", $conf->{'primary'}, $table);
       $sth = $db->prepare($sql) || die $DBI::error;
