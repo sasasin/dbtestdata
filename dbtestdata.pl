@@ -141,32 +141,47 @@
     while (my($table, $conf) = each(%$confUpdate)) {
       STDOUT->print("UPDATE $table\n");
       
-      my $sql = sprintf("SELECT %s FROM %s", $conf->{'primary'}, $table);
-      my $sth = $db->prepare($sql) || die $DBI::error;
+      my $sql_count = sprintf("SELECT count(%s) FROM %s", $conf->{'primary'}, $table);
+      my $sth = $db->prepare($sql_count) || die $DBI::error;
       $sth->execute() || die $DBI::error;
-      
-      my @primaryKeys;
+      my @primaryKeysCount;
       while (my $row = $sth->fetchrow_arrayref()) {
-        push(@primaryKeys, $row->[0]);
+        push(@primaryKeysCount, $row->[0]);
       }
-      
+      STDOUT->print("\r$primaryKeysCount[0] records will update.");
+
+      my $cursor = 0;
       my $count = 0;
-      foreach my $pk (@primaryKeys) {
-        $count++;
+      while ($cursor <= $primaryKeysCount[0]) {
+        my $sql = sprintf("SELECT %s FROM %s LIMIT %s OFFSET %s", $conf->{'primary'}, $table, $PULSE_COMMIT, $cursor);
+        $sth = $db->prepare($sql) || die $DBI::error;
+        $sth->execute() || die $DBI::error;
         
-        $db->do(
-          UPDATE_SQL(
-            $table,
-            (ref($conf->{'clazz'}) eq 'CODE') ? $conf->{'clazz'}->($pk) : $conf->{'clazz'},
-            [ WHERE($conf->{'primary'}, $pk) ]
-          )
-        ) || die $DBI::error;
-        
-        if (! ($count % $PULSE_COMMIT)) {
-          my $bar = $count % ($PULSE_COMMIT*2) ? '|' : '-';
-          $db->commit() || die $DBI::error;
-          STDOUT->print("\r$bar $count commited.");
+        my @primaryKeys;
+        while (my $row = $sth->fetchrow_arrayref()) {
+          push(@primaryKeys, $row->[0]);
         }
+        
+        $count = 0;
+        foreach my $pk (@primaryKeys) {
+          $count++;
+          
+          $db->do(
+            UPDATE_SQL(
+              $table,
+              (ref($conf->{'clazz'}) eq 'CODE') ? $conf->{'clazz'}->($pk) : $conf->{'clazz'},
+              [ WHERE($conf->{'primary'}, $pk) ]
+            )
+          ) || die $DBI::error;
+          
+          if (! ($count % $PULSE_COMMIT)) {
+            my $bar = $count % ($PULSE_COMMIT*2) ? '|' : '-';
+            $db->commit() || die $DBI::error;
+            STDOUT->print("\r$bar $count commited.");
+          }
+        }
+
+        $cursor += $PULSE_COMMIT;
       }
       
       $db->commit() || die $DBI::error;

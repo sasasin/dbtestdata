@@ -59,9 +59,9 @@
         while (my($n,$v) = each(%$dataClazz)) {
             $v = _lbox($v);
             if ($v->{'type'} eq 'SQL') {
-                push(@dataValues, "$n=".$v->{'gen'}->());
+                push(@dataValues, "\`$n\`=".$v->{'gen'}->());
             } else {
-                push(@dataValues, "$n="._sqlquote($v->{'gen'}->()));
+                push(@dataValues, "\`$n\`="._sqlquote($v->{'gen'}->()));
             }
         }
         
