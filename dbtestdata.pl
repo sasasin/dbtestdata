@@ -10,6 +10,7 @@
   use DBI;
   use Getopt::Long;
   use IO::Handle;
+  STDOUT->autoflush(1);
 
   ##
   # DBテストデータ作成ツール。
