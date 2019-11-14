@@ -149,7 +149,7 @@
       while (my $row = $sth->fetchrow_arrayref()) {
         push(@primaryKeysCount, $row->[0]);
       }
-      STDOUT->print("\r$primaryKeysCount[0] records will update.");
+      STDOUT->print("$primaryKeysCount[0] records will update.\n");
 
       my $cursor = 0;
       my $count = 0;
@@ -177,7 +177,7 @@
           if (! ($count % $PULSE_COMMIT)) {
             my $bar = $count % ($PULSE_COMMIT*2) ? '|' : '-';
             $db->commit() || die $DBI::error;
-            STDOUT->print("\r$bar $count commited.");
+            STDOUT->print("$bar $count commited.\n");
           }
         }
 
@@ -185,7 +185,7 @@
       }
       
       $db->commit() || die $DBI::error;
-      STDOUT->print("\r+ $count commited.\n");
+      STDOUT->print("+ $count commited.\n");
       
       STDOUT->print("finished.\n");
     }
