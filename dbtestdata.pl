@@ -154,7 +154,7 @@
       my $cursor = 0;
       my $count = 0;
       while ($cursor <= $primaryKeysCount[0]) {
-        my $sql = sprintf("SELECT %s FROM %s LIMIT %s OFFSET %s", $conf->{'primary'}, $table, $PULSE_COMMIT, $cursor);
+        my $sql = sprintf("SELECT %s FROM %s WHERE %s BETWEEN %s AND (%s + %s)", $conf->{'primary'}, $table, $conf->{'primary'}, $cursor, $cursor, $PULSE_COMMIT);
         $sth = $db->prepare($sql) || die $DBI::error;
         $sth->execute() || die $DBI::error;
         
