@@ -142,14 +142,14 @@
     while (my($table, $conf) = each(%$confUpdate)) {
       STDOUT->print("UPDATE $table\n");
       
-      my $sql_count = sprintf("SELECT max(%s), count(%s) FROM %s", $conf->{'primary'}, $conf->{'primary'}, $table);
+      my $sql_count = sprintf("SELECT max(%s) FROM %s", $conf->{'primary'}, $table);
       my $sth = $db->prepare($sql_count) || die $DBI::error;
       $sth->execute() || die $DBI::error;
       my @primaryKeysCount;
       while (my $row = $sth->fetchrow_arrayref()) {
         push(@primaryKeysCount, $row->[0]);
       }
-      STDOUT->print("$primaryKeysCount[1] records will update.\n");
+      STDOUT->print("$primaryKeysCount[0] records will update.\n");
 
       my $cursor = 0;
       my $count = 0;
