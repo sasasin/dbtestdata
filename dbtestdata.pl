@@ -142,7 +142,7 @@
     while (my($table, $conf) = each(%$confUpdate)) {
       STDOUT->print("UPDATE $table\n");
       
-      my $sql_count = sprintf("SELECT max(%s) FROM %s", $conf->{'primary'}, $table);
+      my $sql_count = sprintf("SELECT ifnull(max(%s), 0) FROM %s", $conf->{'primary'}, $table);
       my $sth = $db->prepare($sql_count) || die $DBI::error;
       $sth->execute() || die $DBI::error;
       my @primaryKeysCount;
