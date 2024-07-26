@@ -102,6 +102,7 @@
     my $confInsert = $config->{'insert'};
     
     while (my($table, $conf) = each(%$confInsert)) {
+      $table = "`$table`";
       STDOUT->print("INSERT $table\n");
       
       my $count = 0;
@@ -140,6 +141,7 @@
     my $confUpdate = $config->{'update'};
     
     while (my($table, $conf) = each(%$confUpdate)) {
+      $table = "`$table`";
       STDOUT->print("UPDATE $table\n");
       
       my $sql_count = sprintf("SELECT ifnull(max(%s), 0) FROM %s", $conf->{'primary'}, $table);
@@ -201,6 +203,7 @@
     my $confDelete = $config->{'delete'};
     
     foreach my $t (@$confDelete) {
+      $t = "`$t`";
       STDOUT->print("DELETE $t\n");
       $db->do("DELETE FROM $t") || die $DBI::error;
       STDOUT->print("finished.\n");
